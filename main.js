@@ -5,7 +5,9 @@ var app = angular.module('app', ['ngResource']).directive('autocomplete', functi
         scope: {
             remoteData: '&',
             placeholder: '@placeholder',
-            selectedItem: '=selectedItem'
+            selectedItem: '=selectedItem',
+            lastLabel: '@',
+            lastEvent: '&'
         },
         template: '<div class="input-append btn-group" ' +
         'ng-class="{open: focused && _choices.length>0}"> ' +
@@ -14,7 +16,10 @@ var app = angular.module('app', ['ngResource']).directive('autocomplete', functi
         '<ul class="dropdown-menu span3"> ' +
         '<li ng-repeat="choice in _choices"> ' +
         '<a href="javascript:void(0);" ng-click="selectMe(choice)">{{choice.label}}</a>'+
-        '</li></ul>{{$scope.firstInit}}',
+        '</li>'+
+        '<li class="divider" ng-show="lastLabel!=undefined"></li>'+
+        '<li ng-show="lastLabel!=undefined"><a href="#" ng-click="lastEvent()">{{lastLabel}}</a></li>'+
+        '</ul>',
 
         controller: function($scope, $element, $attrs) {
             $scope.searchTerm = $scope.selectedItem.label;
@@ -23,7 +28,6 @@ var app = angular.module('app', ['ngResource']).directive('autocomplete', functi
                 $scope.searchTerm = $scope.lastSearchTerm = choice.label;
             };
             $scope.updateSearch = function() {
-                $scope.firstInit = false;
                 if ($scope.canRefresh()) {
                     $scope.searching = true;
                     $scope.lastSearchTerm = $scope.searchTerm;
@@ -98,6 +102,10 @@ var app = angular.module('app', ['ngResource']).directive('autocomplete', functi
         ]);
 
     }
+
+    $scope.cancel = function(){
+        alert("hello");
+    };
 
     $scope.reset = function(){
         $scope.selectedItem = {
